@@ -12,6 +12,9 @@
 *.map
 *.exp
 
+#EXTRA hulp files
+*.txt
+
 # Precompiled Headers
 *.gch
 *.pch
