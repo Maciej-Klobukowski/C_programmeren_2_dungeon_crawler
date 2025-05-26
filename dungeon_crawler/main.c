@@ -134,12 +134,9 @@ void bgevechtMetMonster(Player *speler, int monsterType) {
         }
     }
 
-    // Resultaat
-    if (speler->health <= 0) {
-        printf("\nDe speler is verslagen...\n");
-    } else {
-        printf("\nHet monster is verslagen!\n");
-        speler->health += 10;
-        printf("Speler geneest 10 HP. Nieuwe HP: %d\n", speler->health);
+    speler->health += 10;
+    if (speler->health > 100) {
+    speler->health = 100;
     }
+    printf("You got lucky after the fight! Speler geneest 10 HP. Nieuwe HP: %d\n", speler->health);
 }
