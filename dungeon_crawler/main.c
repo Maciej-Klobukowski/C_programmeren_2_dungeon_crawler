@@ -11,6 +11,8 @@ typedef struct {
     int id;              // Kamer id waar de speler zich bevindt
     int health;          // Gezondheid van de speler
     int damage;          // Schade die de speler doet
+    int baseMaxHealth;  // Standaard 100
+    int bonusMaxHealth; // Extra HP van items
 } Player;
 
 typedef struct {
@@ -34,14 +36,12 @@ typedef struct {
 
 void bgevechtMetMonster(Player *speler, int monsterType);
 void generateBinary(int *randomgetal16, int *bin, char *binary);
+Item generateRandomItem();
+void applyItem(Player *speler, Item item);
 
 int main() {
 
-    srand(time(NULL));  // random getall thing
-    Player speler = { .id = 1, .health = 100, .damage = 20 };// info voor de speler hp damage en id voor opslag
-    int monsterType = (rand() % 2) + 1;// 1 of 2 nee kaas
-    bgevechtMetMonster(&speler, monsterType);// fight fight fight
-
+    srand(time(NULL)); // Initialiseer random number generator
     return 0;
 
 }
@@ -98,8 +98,8 @@ void bgevechtMetMonster(Player *speler, int monsterType) {
     srand(time(0));
 
     if (monsterType == 1) {
-        monster.monsterhealth = 40;
-        monster.monsterdamage = 8;
+        monster.monsterhealth = 400;
+        monster.monsterdamage = 228;
         printf("Je vecht tegen Monster kaaas.\n");
     } else if (monsterType == 2) {
         monster.monsterhealth = 70;
@@ -134,9 +134,44 @@ void bgevechtMetMonster(Player *speler, int monsterType) {
         }
     }
 
-    speler->health += 10;
-    if (speler->health > 100) {
-    speler->health = 100;
+       speler->health += 10;
+    int totalMaxHP = speler->baseMaxHealth + speler->bonusMaxHealth;
+    
+    if (speler->health > totalMaxHP) {
+        speler->health = totalMaxHP;
     }
-    printf("You got lucky after the fight! Speler geneest 10 HP. Nieuwe HP: %d\n", speler->health);
+
+    printf("You got lucky! HP hersteld naar %d/%d\n", 
+           speler->health, totalMaxHP);
+}
+
+Item generateRandomItem() {
+    Item item;
+    int itemType = rand() % 2; // 0 = health boost, 1 = damage boost
+
+    if (itemType == 0) {
+        item.healthBoost = (rand() % 16) + 5; // 5 to 20 HP
+        item.damageBoost = 0;
+    } else {
+        item.healthBoost = 0;
+        item.damageBoost = (rand() % 6) + 2;  // 2 to 7 damage
+    }
+
+    return item;
+}
+
+// Example of using the item (call this when the player picks up an item)
+void applyItem(Player *speler, Item item) {
+     if (item.healthBoost > 0) {
+        // Voeg toe aan bonus HP en genees
+        speler->bonusMaxHealth += item.healthBoost;
+        speler->health += item.healthBoost;
+        printf("Health boosted by %d! HP is nu %d/%d\n", 
+               item.healthBoost,
+               speler->health,
+               speler->baseMaxHealth + speler->bonusMaxHealth);
+    } else if (item.damageBoost > 0) {
+        speler->damage += item.damageBoost;
+        printf("Damage boosted by %d! New damage: %d\n", item.damageBoost, speler->damage);
+    }
 }
