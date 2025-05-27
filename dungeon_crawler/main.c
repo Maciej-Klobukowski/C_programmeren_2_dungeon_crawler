@@ -159,6 +159,8 @@ Graph* generate_dungeon(int num_rooms) {
     return dungeon;
 }
 
+
+// leg uit
 void populate_rooms_with_content(Graph* dungeon) {
     int treasure_room = find_farthest_room(dungeon);
 
@@ -166,22 +168,22 @@ void populate_rooms_with_content(Graph* dungeon) {
         if (i != 0 && rand() % 100 < 40) {
             dungeon->rooms[i].game_room.hasMonster = 1;
             if (rand() % 2) {
-                dungeon->rooms[i].game_room.monster.monsterhealth = 400;
-                dungeon->rooms[i].game_room.monster.monsterdamage = 228;
+                dungeon->rooms[i].game_room.monster.monsterhealth = 40;
+                dungeon->rooms[i].game_room.monster.monsterdamage = 28;
             } else {
                 dungeon->rooms[i].game_room.monster.monsterhealth = 70;
                 dungeon->rooms[i].game_room.monster.monsterdamage = 15;
             }
         }
 
-        if (rand() % 100 < 30) {
-            dungeon->rooms[i].game_room.hasItem = 1;
-            dungeon->rooms[i].game_room.item = generateRandomItem();
-        }
+    if (rand() % 100 < 30) {
+        dungeon->rooms[i].game_room.hasItem = 1;
+       dungeon->rooms[i].game_room.item = generateRandomItem();
+    }
 
-        if (i == treasure_room) {
-            dungeon->rooms[i].game_room.hasTreasure = 1;
-        }
+     if (i == treasure_room) {
+         dungeon->rooms[i].game_room.hasTreasure = 1;
+    }
     }
 }
 
@@ -252,7 +254,7 @@ Graph* create_graph(int num_rooms) {
         graph->rooms[i].num_connections = 0;        // Nog geen connecties
     }
 
-    // Oude linked list systeem (werkt nog steeds maar we gebruiken arrays nu)
+    // Oude linked list systeem 
     graph->adj_lists = (AdjList*)malloc(num_rooms * sizeof(AdjList));
     for (int i = 0; i < num_rooms; i++) {
         graph->adj_lists[i].head = NULL;            // Lege linked lists
@@ -261,7 +263,7 @@ Graph* create_graph(int num_rooms) {
     return graph;  // Return de hele dungeon!
 }
 
-// Tel hoeveel connecties een kamer heeft (oud systeem)
+// Tel hoeveel connecties een kamer heeft 
 int count_connections(Graph* graph, int room) {
     int count = 0;
     AdjListNode* node = graph->adj_lists[room].head;  // Start bij eerste node
@@ -272,7 +274,7 @@ int count_connections(Graph* graph, int room) {
     return count;             // Return totaal aantal
 }
 
-// Check of twee kamers met elkaar verbonden zijn (oud systeem)
+// Check of twee kamers met elkaar verbonden zijn 
 bool are_connected(Graph* graph, int room1, int room2) {
     AdjListNode* node = graph->adj_lists[room1].head;  // Start bij room1's connecties
     while (node) {
@@ -282,7 +284,7 @@ bool are_connected(Graph* graph, int room1, int room2) {
     return false;  // Nope, niet connected
 }
 
-// Print alle connecties van elke kamer (handig voor debugging)
+// Print alle connecties van elke kamer 
 void print_dungeon(Graph* dungeon) {
     for (int i = 0; i < dungeon->num_rooms; i++) {
         printf("Room %d connects to: ", i);    // Print kamer nummer
@@ -402,7 +404,7 @@ int find_farthest_room(Graph* dungeon) {
     while (front < rear) {
         int current = queue[front++];  // Pak volgende kamer uit queue
 
-        // Kijk naar alle connecties van huidige kamer (NIEUW systeem - connections array!)
+        // Kijk naar alle connecties van huidige kamer 
         for (int i = 0; i < dungeon->rooms[current].num_connections; i++) {
             int connected_room = dungeon->rooms[current].connections[i];
             if (distances[connected_room] == -1) {  // Als nog niet bezocht
